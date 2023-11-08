@@ -1,24 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const products = require('../data/products.json');
-
-function readDataFromFile(filename) {
-    try {
-      const data = fs.readFileSync(filename, 'utf8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.error(`Error al leer ${filename}: ${error.message}`);
-      return [];
-    }
-}
-  
-function writeDataToFile(filename, data) {
-    try {
-      fs.writeFileSync(filename, JSON.stringify(data, null, 2), 'utf8');
-    } catch (error) {
-      console.error(`Error al escribir en ${filename}: ${error.message}`);
-    }
-}
+const { readDataFromFile, writeDataToFile } = require('../utils');
   
 let products = readDataFromFile('../data/products.json');
 
@@ -85,7 +68,7 @@ productsRouter.post('/', (req, res) => {
   
     products.push(newProduct);
 
-    writeDataToFile('productos.json', products);
+    writeDataToFile('../data/products.json', products);
   
     res.status(201).json(newProduct);
 });
@@ -109,7 +92,7 @@ productsRouter.put('/:pid', (req, res) => {
     if (category) updatedProduct.category = category;
     if (thumbnails) updatedProduct.thumbnails = thumbnails;
   
-    writeDataToFile('productos.json', products);
+    writeDataToFile('../data/products.json', products);
   
     res.json(updatedProduct);
 });
@@ -124,7 +107,7 @@ productsRouter.delete('/:pid', (req, res) => {
   
     products.splice(productIndex, 1);
   
-    writeDataToFile('productos.json', products);
+    writeDataToFile('../data/products.json', products);
   
     res.json({ message: 'Producto eliminado' });
 });

@@ -1,27 +1,10 @@
 const express = require('express');
 const fs = require('fs');
 const carts = require('../data/carts.json');
-
-function readDataFromFile(filename) {
-    try {
-      const data = fs.readFileSync(filename, 'utf8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.error(`Error al leer ${filename}: ${error.message}`);
-      return [];
-    }
-}
-  
-function writeDataToFile(filename, data) {
-    try {
-      fs.writeFileSync(filename, JSON.stringify(data, null, 2), 'utf8');
-    } catch (error) {
-      console.error(`Error al escribir en ${filename}: ${error.message}`);
-    }
-}
+const { readDataFromFile, writeDataToFile } = require('../utils');
 
 let products = readDataFromFile('../data/products.json');
-let carts = readDataFromFile('carrito.json');
+let carts = readDataFromFile('../data/carts.json');
 
 const cartsRouter = express.Router();
 
@@ -36,12 +19,12 @@ cartsRouter.post('/', (req, res) => {
   
     carts.push(newCart);
   
-    writeDataToFile('carrito.json', carts);
+    writeDataToFile('../data/carts.json', carts);
   
     res.status(201).json(newCart);
 });
   
-cartsRouter.get('/:cid', (req, res) => {
+cartsRouter.get('/:cid/products', (req, res) => {
     const cartId = req.params.cid;
     const cart = carts.find((c) => c.id === cartId);
   
@@ -78,7 +61,7 @@ cartsRouter.post('/:cid/product/:pid', (req, res) => {
       });
     }
   
-    writeDataToFile('carrito.json', carts);
+    writeDataToFile('../data/carts.json', carts);
   
     res.status(201).json(cart.products);
 });
