@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 function readDataFromFile(filename) {
     try {
       const data = fs.readFileSync(filename, 'utf8');
@@ -16,4 +18,4 @@ function writeDataToFile(filename, data) {
     }
 }
 
-module.exports = { readDataFromFile, writeDataToFile };
+export { readDataFromFile, writeDataToFile };

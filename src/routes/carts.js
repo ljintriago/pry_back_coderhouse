@@ -1,12 +1,10 @@
-const express = require('express');
-const fs = require('fs');
-const carts = require('../data/carts.json');
-const { readDataFromFile, writeDataToFile } = require('../utils');
+import { Router } from 'express';
+import { readDataFromFile, writeDataToFile } from '../utils.js';
 
 let products = readDataFromFile('../data/products.json');
 let carts = readDataFromFile('../data/carts.json');
 
-const cartsRouter = express.Router();
+const cartsRouter = Router();
 
 cartsRouter.post('/', (req, res) => {
     
@@ -66,4 +64,4 @@ cartsRouter.post('/:cid/product/:pid', (req, res) => {
     res.status(201).json(cart.products);
 });
 
-module.exports = cartsRouter;
+export { cartsRouter };

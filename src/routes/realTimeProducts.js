@@ -1,6 +1,6 @@
-const express = require('express');
-const realTimeRouter = express.Router();
-const fs = require('fs');
+import { Router } from 'express';
+const realTimeRouter = Router();
+import fs from 'fs';
 
 function cargarProductos() {
   try {
@@ -72,4 +72,4 @@ router.post('/deleteProduct', (req, res) => {
 });
   
 
-module.exports = realTimeRouter;
+export {realTimeRouter};

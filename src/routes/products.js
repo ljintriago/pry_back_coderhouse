@@ -1,15 +1,13 @@
-const express = require('express');
-const fs = require('fs');
-const products = require('../data/products.json');
-const { readDataFromFile, writeDataToFile } = require('../utils');
+import { Router } from 'express';
+import { readDataFromFile, writeDataToFile } from '../utils.js'
   
-let products = readDataFromFile('../data/products.json');
+let productsFromFile = readDataFromFile('../data/products.json');
 
-const productsRouter = express.Router();
+const productsRouter = Router();
 
-productsRouter.get('/', (req, res) => {
+productsRouter.get('/', async (req, res) => {
     const { limit } = req.query;
-    let productList = products;
+    let productList = productsFromFile;
   
     if (limit) {
       const parsedLimit = parseInt(limit, 10);
@@ -24,7 +22,7 @@ productsRouter.get('/', (req, res) => {
   
 productsRouter.get('/:pid', (req, res) => {
     const productId = req.params.pid;
-    const product = products.find((p) => p.id === productId);
+    const product = productsFromFile.find((p) => p.id === productId);
   
     if (product) {
       res.json(product);
@@ -66,22 +64,22 @@ productsRouter.post('/', (req, res) => {
       thumbnails: thumbnails || [],
     };
   
-    products.push(newProduct);
+    productsFromFile.push(newProduct);
 
-    writeDataToFile('../data/products.json', products);
+    writeDataToFile('../data/products.json', productsFromFile);
   
     res.status(201).json(newProduct);
 });
   
 productsRouter.put('/:pid', (req, res) => {
     const productId = req.params.pid;
-    const productIndex = products.findIndex((p) => p.id === productId);
+    const productIndex = productsFromFile.findIndex((p) => p.id === productId);
   
     if (productIndex === -1) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
   
-    const updatedProduct = products[productIndex];
+    const updatedProduct = productsFromFile[productIndex];
     const { title, description, code, price, stock, category, thumbnails } = req.body;
   
     if (title) updatedProduct.title = title;
@@ -92,24 +90,24 @@ productsRouter.put('/:pid', (req, res) => {
     if (category) updatedProduct.category = category;
     if (thumbnails) updatedProduct.thumbnails = thumbnails;
   
-    writeDataToFile('../data/products.json', products);
+    writeDataToFile('../data/products.json', productsFromFile);
   
     res.json(updatedProduct);
 });
   
 productsRouter.delete('/:pid', (req, res) => {
     const productId = req.params.pid;
-    const productIndex = products.findIndex((p) => p.id === productId);
+    const productIndex = productsFromFile.findIndex((p) => p.id === productId);
   
     if (productIndex === -1) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
   
-    products.splice(productIndex, 1);
+    productsFromFile.splice(productIndex, 1);
   
-    writeDataToFile('../data/products.json', products);
+    writeDataToFile('../data/products.json', productsFromFile);
   
     res.json({ message: 'Producto eliminado' });
 });
 
-module.exports = productsRouter;
+export { productsRouter };
